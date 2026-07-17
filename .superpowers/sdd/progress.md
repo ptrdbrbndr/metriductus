@@ -48,3 +48,10 @@ Task 9+12: complete (frontend af — marketing / + dashboard /app + /app/d/[zone
 - dagelijkse cron op Beelink: 04:15 UTC ~/metriductus-collect.sh (hit app intern), log ~/metriductus-collect.log
 
 ## KLUS 2 nog open (human): metriductus.nl toevoegen aan CF -> dan NS-flip + DNS + CF Access
+
+## KLUS 2 (2026-07-18)
+- CF-zone metriductus.nl id 1f36da4181d0560eee1b56acdc3242f6 (NS bradley/ollie)
+- DNS: metriductus.nl + www CNAME -> tunnel (proxied) aangemaakt
+- NS-flip mijn.host: raw {"nameservers":[...]} werkte (nameserver_profile=no-op, credentials gecorrigeerd)
+- CF Access: WACHT op zone active (create gaf 'domain does not belong to zone' zolang pending)
+- Monitor draait op zone-status
