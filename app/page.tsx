@@ -20,7 +20,7 @@ export default function MarketingPage() {
       </div>
       <div className="mk-hero">
         <div>
-          <div className="eyebrow">Traffic-inzicht · Ductus-stack</div>
+          <div className="eyebrow">Traffic-inzicht · Ductus-stack XZMARKETINGXZ</div>
           <h1>Zie welke sites aandacht en klanten opleveren.</h1>
           <p>
             Eén dashboard dat de bezoekers, herkomst en koopintentie van al je domeinen samenbrengt —
