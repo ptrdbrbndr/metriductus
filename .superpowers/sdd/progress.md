@@ -55,3 +55,10 @@ Task 9+12: complete (frontend af — marketing / + dashboard /app + /app/d/[zone
 - NS-flip mijn.host: raw {"nameservers":[...]} werkte (nameserver_profile=no-op, credentials gecorrigeerd)
 - CF Access: WACHT op zone active (create gaf 'domain does not belong to zone' zolang pending)
 - Monitor draait op zone-status
+
+## KLUS 2 KLAAR + ROUTING-BUG OPGELOST (2026-07-18)
+- metriductus.nl zone active, DNS+tunnel werken; site publiek live
+- BUG: app/app/page.tsx mapte op Linux '/' naar dashboard (data-lek op /). Fix: hernoemd naar app/dashboard/ + eigen Dockerfile (build_pack=dockerfile) i.p.v. nixpacks
+- / = publieke marketing (200), /dashboard = CF Access-login (302), Access-policy 'Pieter + Chris'
+- screenshots gemaakt (marketing rendert correct)
+- KLAAR: volledige stack live end-to-end
