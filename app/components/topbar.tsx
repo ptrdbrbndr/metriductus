@@ -14,15 +14,15 @@ export function Topbar({
 }) {
   return (
     <div className="topbar">
-      <Link className="brand" href="/app">
+      <Link className="brand" href="/dashboard">
         <BrandGlyph />
         Metriductus
       </Link>
       <nav>
-        <Link className={active === 'overzicht' ? 'on' : ''} href="/app">
+        <Link className={active === 'overzicht' ? 'on' : ''} href="/dashboard">
           Overzicht
         </Link>
-        <Link className={active === 'domeinen' ? 'on' : ''} href="/app">
+        <Link className={active === 'domeinen' ? 'on' : ''} href="/dashboard">
           Domeinen
         </Link>
       </nav>

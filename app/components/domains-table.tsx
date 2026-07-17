@@ -64,7 +64,7 @@ export function DomainsTable({ rows }: { rows: DomainRow[] }) {
             <tr
               key={d.zoneName}
               className="row-link"
-              onClick={() => router.push(`/app/d/${d.zoneName}`)}
+              onClick={() => router.push(`/dashboard/d/${d.zoneName}`)}
               data-testid={`domain-row-${d.zoneName}`}
             >
               <td>

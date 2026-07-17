@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { BrandGlyph } from './components/brand-glyph'
 import { ThemeToggle } from './components/theme-toggle'
 
-// Marketing landing op '/' — publiek. Dashboard zit onder '/app' (achter CF Access).
+// Marketing landing op '/' — publiek. Dashboard zit onder '/dashboard' (achter CF Access).
 // (cache-bust: forceer verse prerender van de root-route)
 export default function MarketingPage() {
   return (
@@ -14,7 +14,7 @@ export default function MarketingPage() {
         </div>
         <div className="spacer" />
         <ThemeToggle />
-        <Link className="btn ghost" href="/app" style={{ marginLeft: 12 }} data-testid="nav-to-dashboard">
+        <Link className="btn ghost" href="/dashboard" style={{ marginLeft: 12 }} data-testid="nav-to-dashboard">
           Naar het dashboard
         </Link>
       </div>
@@ -26,7 +26,7 @@ export default function MarketingPage() {
             Eén dashboard dat de bezoekers, herkomst en koopintentie van al je domeinen samenbrengt —
             dagelijks vers uit Cloudflare, met historie die verder teruggaat dan de bron zelf bewaart.
           </p>
-          <Link className="btn" href="/app" data-testid="cta-to-dashboard">
+          <Link className="btn" href="/dashboard" data-testid="cta-to-dashboard">
             Naar het dashboard →
           </Link>
         </div>

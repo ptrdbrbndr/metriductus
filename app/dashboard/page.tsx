@@ -32,7 +32,7 @@ export default async function OverviewPage({
 
   return (
     <section>
-      <Topbar active="overzicht" days={days} periodBasePath="/app" />
+      <Topbar active="overzicht" days={days} periodBasePath="/dashboard" />
       <div className="wrap">
         <div className="page-head">
           <div>

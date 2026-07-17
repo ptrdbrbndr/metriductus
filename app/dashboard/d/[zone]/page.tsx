@@ -45,9 +45,9 @@ export default async function DomainDetailPage({
 
   return (
     <section>
-      <Topbar active="domeinen" days={days} periodBasePath={`/app/d/${zone}`} />
+      <Topbar active="domeinen" days={days} periodBasePath={`/dashboard/d/${zone}`} />
       <div className="wrap">
-        <Link className="back" href="/app">
+        <Link className="back" href="/dashboard">
           ← Overzicht
         </Link>
         <div className="page-head">
