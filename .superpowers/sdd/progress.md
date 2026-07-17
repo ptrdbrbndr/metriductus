@@ -21,3 +21,12 @@ Task 9+12: complete (frontend af — marketing / + dashboard /app + /app/d/[zone
 - CF Analytics-token -> probe (Task 1 step5) + integratietest /api/collect (Task 7)
 - Deploy Coolify + CF Access + cron (Task 10)
 - Finale whole-branch review
+
+## Supabase-stack GEPROVISIONEERD (2026-07-17)
+- Coolify project 'metriductus' uuid j2b0u52ecol5fv6jakfslipo
+- service supabase-metriductus uuid le5ixfl1mdf998o6ta6rgzs0 op server localhost (Beelink 1)
+- Valkuil 1 gefixt (_supabase-db ontbrak) + volledige compose up
+- Schema toegepast (4 tabellen) + 11 domeinen geseed
+- End-to-end geverifieerd: kong->PostgREST->db geeft domains terug (service_role)
+- Interne app-URL: http://supabase-kong-le5ixfl1mdf998o6ta6rgzs0:8000
+- Keys in /data/coolify/services/le5ixfl1mdf998o6ta6rgzs0/.env (SERVICE_SUPABASESERVICE_KEY / SERVICE_SUPABASEANON_KEY / SERVICE_PASSWORD_POSTGRES)
