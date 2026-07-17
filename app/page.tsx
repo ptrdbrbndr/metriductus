@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { BrandGlyph } from './components/brand-glyph'
 import { ThemeToggle } from './components/theme-toggle'
 
+// Marketing landing op '/' — publiek. Dashboard zit onder '/app' (achter CF Access).
+// (cache-bust: forceer verse prerender van de root-route)
 export default function MarketingPage() {
   return (
     <div className="mk">
