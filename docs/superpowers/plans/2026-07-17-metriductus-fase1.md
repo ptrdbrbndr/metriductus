@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Een intern dashboard dat dagelijkse Cloudflare-traffic van 12 business-domeinen snapshot naar self-host Supabase en per domein toont, met CRM-haakjes (conversiepagina-signaal).
+**Goal:** Een intern dashboard dat dagelijkse Cloudflare-traffic van 11 business-domeinen snapshot naar self-host Supabase en per domein toont, met CRM-haakjes (conversiepagina-signaal).
 
 **Architecture:** Eén Next.js-app (App Router) die zowel de dashboard-UI serveert als een beveiligde `/api/collect`-route bevat. Een dagelijkse cron (Coolify scheduled task) POST't naar die route; die haalt per zone de traffic van de vorige dag op bij de CF GraphQL Analytics API en upsert't naar Supabase. Het dashboard leest uitsluitend uit Supabase (geen live CF-call bij pageload). Draait op Coolify achter CF Access.
 
@@ -19,6 +19,31 @@
 - Secrets uit env, nooit hardcoded. Env-namen: `CF_ANALYTICS_TOKEN`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`.
 - Datums in UTC; snapshot draait voor "gisteren" (`date_geq = date_leq = yesterday`).
 
+## Addendum 2026-07-17 — frontend & auth (bindend)
+
+Wijzigingen na goedkeuring van de mockup; deze overrulen de oorspronkelijke
+Task 9/10 waar ze afwijken:
+
+- **Scope = 11 domeinen** (zie Task 3). `liefdevolleblik.nl` is verwijderd.
+- **Auth = CF Access** (Pieter + Chris hebben dit al). **Geen** app-login /
+  iron-session. De dagelijkse cron naar `/api/collect` gaat langs Access via een
+  **service-token** of een bypass-policy op alleen die route (Task 10).
+- **Domein:** `metriductus.nl` — publieke marketing-landing + dashboard achter
+  CF Access.
+- **Task 9 UI volgt de goedgekeurde mockup**, niet de kale tabel uit de
+  oorspronkelijke Task 9-code. Bron van waarheid voor het ontwerp:
+  `docs/design/dashboard-mockup.html` (kopie van de mockup). Overnemen:
+  KPI-tegels bovenaan (unieke bezoekers, requests, conversiepagina-bezoek,
+  mens%), sorteerbare domeinen-tabel met inline sparkline + status-stip +
+  conversie-pill, detailscherm met area-chart + herkomst-balken + top-paden
+  (conversiepagina's gemarkeerd), en de **thema-toggle Licht/Systeem/Donker**
+  (`data-theme`, patroon datamanagement.nl). Palet/typografie: neutrale grijzen
+  met groenzweem, één teal-accent, editorial serif voor cijfers (zelf-gehost),
+  semantische kleuren los van de accent.
+- **Nieuwe Task 12: publieke marketing-landing** op `/` (buiten CF Access), met
+  het dashboard onder `/app` (achter Access). Landing = hero + CTA naar het
+  dashboard, zelfde visuele taal als de mockup.
+
 ---
 
 ## File Structure
@@ -28,14 +53,14 @@ metriductus/
 ├── package.json, tsconfig.json, next.config.ts, vitest.config.ts, .env.example
 ├── supabase/migrations/0001_init.sql        # schema
 ├── lib/
-│   ├── domains.ts       # 12 domeinen config (label, conversion_paths)
+│   ├── domains.ts       # 11 domeinen config (label, conversion_paths)
 │   ├── cf.ts            # CF GraphQL client (fetch + query)
 │   ├── transform.ts     # GraphQL-respons → typed rows
 │   ├── db.ts            # Supabase server-client + upserts
 │   └── queries.ts       # dashboard read-queries
 ├── app/
 │   ├── api/collect/route.ts   # beveiligde snapshot-endpoint
-│   ├── page.tsx               # overzicht (12 domeinen)
+│   ├── page.tsx               # overzicht (11 domeinen)
 │   └── d/[zone]/page.tsx      # domein-detail
 ├── __tests__/
 │   ├── transform.test.ts
@@ -131,7 +156,7 @@ console.log('OK — analytics permissie werkt')
 
 In Cloudflare → My Profile → API Tokens → Create Token → Custom:
 - Permissions: `Zone → Analytics → Read` **en** `Zone → Zone → Read`
-- Zone Resources: All zones (of de 12 specifiek)
+- Zone Resources: All zones (of de 11 specifiek)
 Zet de tokenwaarde in `.env` als `CF_ANALYTICS_TOKEN` en voeg 'm toe aan `credentials.md`.
 
 - [ ] **Step 5: Verifieer**
@@ -237,7 +262,6 @@ export const DOMAINS: DomainConfig[] = [
   { zoneName: 'congressionals.nl', label: 'Congressionals',  conversionPaths: ['/contact'] },
   { zoneName: 'aquaductus.nl',     label: 'Aquaductus',      conversionPaths: ['/lid-worden','/contact'] },
   { zoneName: 'vitaductus.nl',     label: 'Vitaductus',      conversionPaths: ['/contact'] },
-  { zoneName: 'liefdevolleblik.nl',label: 'Liefdevolle Blik',conversionPaths: ['/contact'] },
   { zoneName: 'debrabander.com',   label: 'De Brabander',    conversionPaths: ['/contact'] },
   { zoneName: 'veriductus.nl',     label: 'Veriductus',      conversionPaths: ['/contact'] },
   { zoneName: 'conductus.nl',      label: 'Conductus',       conversionPaths: ['/contact'] },
@@ -266,7 +290,7 @@ console.log(`geseed: ${DOMAINS.length} domeinen`)
 - [ ] **Step 3: Uitvoeren**
 
 Run: `npx tsx --env-file=.env scripts/seed-domains.mjs`
-Expected: `geseed: 12 domeinen`
+Expected: `geseed: 11 domeinen`
 
 - [ ] **Step 4: Commit**
 
@@ -541,7 +565,7 @@ npm run build && npm start &
 sleep 4
 curl -s -X POST localhost:3000/api/collect -H "Authorization: Bearer $CRON_SECRET" | npx json
 ```
-Expected: `{ day: "...", ok: [ ...12 zones... ], failed: [] }` en rijen in `daily_traffic` (`psql ... -c "select count(*) from daily_traffic"` > 0).
+Expected: `{ day: "...", ok: [ ...11 zones... ], failed: [] }` en rijen in `daily_traffic` (`psql ... -c "select count(*) from daily_traffic"` > 0).
 
 - [ ] **Step 3: Commit**
 
@@ -723,7 +747,7 @@ export function TrendChart({ data }: { data: { day: string; uniques: number }[] 
 - [ ] **Step 3: Handmatige verificatie**
 
 Run: `npm run build && npm start`, open `localhost:3000`.
-Expected: tabel met 12 domeinen, sorteerbaar op periode; klik op een domein → detailpagina met trendgrafiek + top-landen.
+Expected: tabel met 11 domeinen, sorteerbaar op periode; klik op een domein → detailpagina met trendgrafiek + top-landen.
 
 - [ ] **Step 4: Commit**
 
@@ -759,7 +783,7 @@ git add app/page.tsx "app/d/[zone]/page.tsx" "app/d/[zone]/trend-chart.tsx" && g
 - [ ] **Step 4: Eerste handmatige run + verifieer**
 
 Run: `curl -X POST https://metriductus.<intern>/api/collect -H "Authorization: Bearer <secret>"`
-Expected: `{ ok: [12 zones], failed: [] }`; dashboard toont data.
+Expected: `{ ok: [11 zones], failed: [] }`; dashboard toont data.
 
 - [ ] **Step 5: Commit README**
 
@@ -783,7 +807,7 @@ git add README.md && git commit -m "docs: deploy + cron instructies"
 ## Self-Review
 
 **Spec-dekking:**
-- 12 CF-domeinen scope → Task 3 (`DOMAINS`). ✅
+- 11 CF-domeinen scope → Task 3 (`DOMAINS`). ✅
 - Snapshot naar Supabase (historie) → Task 6/7. ✅
 - Next.js op Coolify achter CF Access → Task 10. ✅
 - Data per domein (uniques/requests/landen) → Task 4/5/8/9. ✅

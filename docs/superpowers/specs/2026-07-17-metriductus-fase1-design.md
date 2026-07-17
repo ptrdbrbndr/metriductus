@@ -13,11 +13,13 @@ traffic-overzicht; latere fases voegen echte lead-signalen toe.
 
 ## Scope fase 1
 
-### In scope — 12 domeinen (allemaal op Cloudflare)
+### In scope — 11 domeinen (allemaal op Cloudflare)
 
 `iductus.nl` · `naviductus.nl` · `autoductus.nl` · `congressionals.nl` ·
-`aquaductus.nl` · `vitaductus.nl` · `liefdevolleblik.nl` · `debrabander.com` ·
+`aquaductus.nl` · `vitaductus.nl` · `debrabander.com` ·
 `veriductus.nl` · `conductus.nl` · `dataductus.nl` · `datamanagement.nl`
+
+> `liefdevolleblik.nl` is bewust **buiten scope** — privéproject, hoort niet in een Ductus-app.
 
 ### Expliciet buiten scope (later)
 
@@ -145,7 +147,7 @@ Opmerkingen:
 
 ## Dashboard — schermen
 
-1. **Overzicht** — tabel van 12 domeinen: label · unieke bezoekers (periode) ·
+1. **Overzicht** — tabel van 11 domeinen: label · unieke bezoekers (periode) ·
    trend-pijl · mens% · conversiepagina-bezoek · top-land. Sorteerbaar.
    Periodekiezer (7/30/90 dagen).
 2. **Domein-detail** — trendgrafiek bezoekers over tijd · top-landen ·
@@ -169,10 +171,34 @@ Opmerkingen:
 ## Beslist (samenvatting)
 
 - Aanpak **B gefaseerd, CF-first**.
-- Scope fase 1 = 12 CF-domeinen hierboven.
+- Scope fase 1 = 11 CF-domeinen hierboven.
 - Hosting: **Next.js op Coolify + snapshot-cron → Supabase self-host (Beelink)**.
 - Historie opbouwen via dagelijkse snapshot (CF-free bewaart maar ~30 dagen).
-- Werknaam project: **metriductus** (wijzigbaar).
+- Werknaam project: **metriductus** (bevestigd).
+
+## Addendum 2026-07-17 — frontend, auth & domein
+
+Toegevoegd/gewijzigd na het eerste ontwerp:
+
+- **Domein geregistreerd:** `metriductus.nl`. Wordt een **publieke marketing-landing**
+  + een **dashboard achter CF Access**.
+- **Auth = CF Access** (niet iron-session). Pieter en Chris hebben al CF Access;
+  geen app-login-scherm. De cron naar `/api/collect` moet langs Access via een
+  **service-token** of een bypass-policy op alleen die route.
+- **Scope 11 domeinen:** `liefdevolleblik.nl` verwijderd (privéproject).
+- **Frontend-ontwerp vastgelegd** (goedgekeurde mockup):
+  - Marketing-landing: hero + "Naar het dashboard", zelfde visuele taal.
+  - Dashboard-overzicht: rij **KPI-tegels** bovenaan (unieke bezoekers, requests,
+    **conversiepagina-bezoek**, mens/bot) — samenvatting eerst; daaronder
+    sorteerbare **domeinen-tabel** met inline **sparkline**, status-stip
+    (goed/aandacht/kritiek) en conversie-pill.
+  - Domein-detail: **area-chart** (bezoekers/dag), herkomst-balken, top-paden
+    met conversiepagina's gemarkeerd.
+  - **Kleurthema-toggle** Licht/Systeem/Donker (`data-theme`-attribuut,
+    patroon van datamanagement.nl); voorkeur onthouden.
+  - Palet: neutrale grijzen met groenzweem + één diepe **teal**-accent;
+    editorial serif voor cijfers, system-sans voor UI (echte build: zelf-gehoste
+    fonts). Semantische kleuren (goed/aandacht/kritiek) los van de accent.
 
 ## Open (voor implementatieplan, niet blokkerend)
 
