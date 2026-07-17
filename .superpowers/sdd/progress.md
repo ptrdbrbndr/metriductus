@@ -40,3 +40,11 @@ Task 9+12: complete (frontend af — marketing / + dashboard /app + /app/d/[zone
 ## BLOCKED op human:
 - CF Analytics-token -> collect + cron
 - metriductus.nl toevoegen aan CF (zone-create) -> NS-flip mijn.host + DNS-CNAMEs + CF Access-policy /app
+
+## KLUS 1 KLAAR (2026-07-17) — data live
+- CF_ANALYTICS_TOKEN gezet (.env + Coolify-app env), geverifieerd active + analytics werkt
+- eerste /api/collect: 11/11 zones ok, 0 failed (dag 2026-07-16); 10 traffic-rijen in DB
+- dashboard toont echte cijfers
+- dagelijkse cron op Beelink: 04:15 UTC ~/metriductus-collect.sh (hit app intern), log ~/metriductus-collect.log
+
+## KLUS 2 nog open (human): metriductus.nl toevoegen aan CF -> dan NS-flip + DNS + CF Access
