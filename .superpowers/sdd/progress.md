@@ -30,3 +30,13 @@ Task 9+12: complete (frontend af — marketing / + dashboard /app + /app/d/[zone
 - End-to-end geverifieerd: kong->PostgREST->db geeft domains terug (service_role)
 - Interne app-URL: http://supabase-kong-le5ixfl1mdf998o6ta6rgzs0:8000
 - Keys in /data/coolify/services/le5ixfl1mdf998o6ta6rgzs0/.env (SERVICE_SUPABASESERVICE_KEY / SERVICE_SUPABASEANON_KEY / SERVICE_PASSWORD_POSTGRES)
+
+## App LIVE op Beelink (2026-07-17)
+- GitHub ptrdbrbndr/metriductus (public) + Coolify app lh5dsonhwdwahlntegvro4fd (Node22, :3000, domains metriductus.nl+www)
+- envs: SUPABASE_URL (interne kong), SUPABASE_SERVICE_ROLE_KEY, CRON_SECRET (~/.metriductus-cron-secret)
+- deploy finished, app draait, /app leest de 11 domeinen uit Supabase (connect_to_docker_network=true)
+- tunnel-ingress metriductus.nl + www toegevoegd (v154/v155)
+
+## BLOCKED op human:
+- CF Analytics-token -> collect + cron
+- metriductus.nl toevoegen aan CF (zone-create) -> NS-flip mijn.host + DNS-CNAMEs + CF Access-policy /app
