@@ -12,3 +12,4 @@ Base commit (voor Task 1): 3937b9c
 (nog geen taken afgerond)
 
 Task 1: complete (commits 835dd5f..5210e5d, scaffold geverifieerd door controller)
+Task 2-8: complete (schema/domains/cf/transform/db/queries; 4/4 tests groen, tsc schoon)
