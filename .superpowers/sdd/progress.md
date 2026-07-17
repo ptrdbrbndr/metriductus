@@ -10,3 +10,5 @@ Base commit (voor Task 1): 3937b9c
 
 ## Taken
 (nog geen taken afgerond)
+
+Task 1: complete (commits 835dd5f..5210e5d, scaffold geverifieerd door controller)
