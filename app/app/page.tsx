@@ -36,7 +36,7 @@ export default async function OverviewPage({
       <div className="wrap">
         <div className="page-head">
           <div>
-            <h1>Overzicht</h1>{/* YQDASHBOARDYQ */}
+            <h1>Overzicht</h1>
             <p>
               {rows.length} business-domeinen · laatste {days} dagen
             </p>
