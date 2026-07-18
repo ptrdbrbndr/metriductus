@@ -69,3 +69,10 @@ Task 9+12: complete (frontend af — marketing / + dashboard /app + /app/d/[zone
 - middleware beschermt /dashboard/*, login /dashboard/login, uitlog-knop in topbar
 - CF Access-app verwijderd; https-flow geverifieerd (login->dashboard 200)
 - /api/collect?days=N backfill; 30 dagen gedraaid (221 traffic-rijen, 11 domeinen)
+
+## FASE 2 LIVE (2026-07-18) — lead-beacon
+- schema lead_events + /api/beacon (whitelist, geen IP, cookieloos) + public/beacon.js
+- dashboard: Conversiepagina-bezoek + Leads-tegels + Menselijke bezoeken + top-paden per domein
+- snippet gedeployed op naviductus.nl, aquaductus.nl, autoductus.nl (Coolify-redeploys)
+- end-to-end geverifieerd met echte browser (Playwright) -> events in DB
+- betaald CF-plan NIET nodig: beacon meet mensen (JS) + conversies gratis
