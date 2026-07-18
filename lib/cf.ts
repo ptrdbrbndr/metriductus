@@ -16,7 +16,11 @@ export async function resolveZoneId(zoneName: string): Promise<string> {
 }
 
 export async function fetchDailyGroups(zoneId: string, day: string): Promise<CfDailyGroup[]> {
-  const query = `query{viewer{zones(filter:{zoneTag:"${zoneId}"}){httpRequests1dGroups(limit:1,filter:{date_geq:"${day}",date_leq:"${day}"}){dimensions{date}sum{requests pageViews bytes threats countryMap{clientCountryName requests}}uniq{uniques}}}}}`
+  return fetchDailyRange(zoneId, day, day)
+}
+
+export async function fetchDailyRange(zoneId: string, fromDay: string, toDay: string): Promise<CfDailyGroup[]> {
+  const query = `query{viewer{zones(filter:{zoneTag:"${zoneId}"}){httpRequests1dGroups(limit:31,filter:{date_geq:"${fromDay}",date_leq:"${toDay}"},orderBy:[date_ASC]){dimensions{date}sum{requests pageViews bytes threats countryMap{clientCountryName requests}}uniq{uniques}}}}}`
   const r = await fetch(`${API}/graphql`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token()}`, 'Content-Type': 'application/json' },

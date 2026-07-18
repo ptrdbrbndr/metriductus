@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { BrandGlyph } from './brand-glyph'
 import { ThemeToggle } from './theme-toggle'
 import { PeriodSelect } from './period-select'
+import { LogoutButton } from './logout-button'
 
 export function Topbar({
   active,
@@ -29,9 +30,7 @@ export function Topbar({
       <div className="spacer" />
       <PeriodSelect basePath={periodBasePath} active={days} />
       <ThemeToggle />
-      <div className="avatar" title="Pieter de Brabander">
-        PB
-      </div>
+      <LogoutButton />
     </div>
   )
 }
