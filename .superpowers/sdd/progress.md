@@ -62,3 +62,10 @@ Task 9+12: complete (frontend af — marketing / + dashboard /app + /app/d/[zone
 - / = publieke marketing (200), /dashboard = CF Access-login (302), Access-policy 'Pieter + Chris'
 - screenshots gemaakt (marketing rendert correct)
 - KLAAR: volledige stack live end-to-end
+
+## WACHTWOORD-LOGIN + BACKFILL (2026-07-18)
+- CF Access vervangen door iron-session wachtwoord-login (OTP-mail kwam onbetrouwbaar aan)
+- 3 accounts via AUTH_USERS_B64 (base64 ivm Coolify $-interpolatie van bcrypt-hashes), SESSION_SECRET in env
+- middleware beschermt /dashboard/*, login /dashboard/login, uitlog-knop in topbar
+- CF Access-app verwijderd; https-flow geverifieerd (login->dashboard 200)
+- /api/collect?days=N backfill; 30 dagen gedraaid (221 traffic-rijen, 11 domeinen)
