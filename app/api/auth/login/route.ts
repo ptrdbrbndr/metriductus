@@ -8,8 +8,12 @@ export const dynamic = 'force-dynamic'
 type User = { email: string; hash: string }
 
 function users(): User[] {
+  // AUTH_USERS_B64 = base64(JSON) — voorkomt dat Coolify de `$` in bcrypt-hashes interpoleert.
+  const raw = process.env.AUTH_USERS_B64
+    ? Buffer.from(process.env.AUTH_USERS_B64, 'base64').toString('utf8')
+    : process.env.AUTH_USERS || '[]'
   try {
-    return JSON.parse(process.env.AUTH_USERS || '[]')
+    return JSON.parse(raw)
   } catch {
     return []
   }
