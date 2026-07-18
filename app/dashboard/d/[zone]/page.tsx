@@ -25,6 +25,15 @@ async function loadDetail(
   }
 }
 
+async function loadBeacon(zoneName: string, days: number) {
+  try {
+    const { getDomainBeacon } = await import('@/lib/queries')
+    return await getDomainBeacon(zoneName, days)
+  } catch {
+    return { hasBeacon: false, pageviews: 0, convPageviews: 0, leads: 0, topPaths: [], leadSeries: [] }
+  }
+}
+
 export default async function DomainDetailPage({
   params,
   searchParams,
@@ -36,12 +45,15 @@ export default async function DomainDetailPage({
   const sp = await searchParams
   const days = parseDays(sp.days)
   const detail = await loadDetail(zone, days)
+  const beacon = await loadBeacon(zone, days)
   const config = DOMAINS.find((d) => d.zoneName === zone)
 
   const series = detail?.series ?? []
   const countries = detail?.countries ?? []
   const uniquesTotal = series.reduce((s, r) => s + r.uniques, 0)
   const cmax = countries[0]?.requests ?? 0
+  const topConv = beacon.topPaths.find((p) => p.isConversion)?.path ?? '—'
+  const b = (v: number) => (beacon.hasBeacon ? v.toLocaleString('nl-NL') : '—')
 
   return (
     <section>
@@ -64,17 +76,17 @@ export default async function DomainDetailPage({
             <div className="mono-label">Unieke bezoekers</div>
             <div className="val tnum">{uniquesTotal.toLocaleString('nl-NL')}</div>
           </div>
-          <div className="kpi" title="Fase 2 — conversietracking volgt later">
+          <div className="kpi" title="Bezoeken aan conversiepagina's via de lead-beacon">
             <div className="mono-label">Conversiepagina-bezoek</div>
-            <div className="val tnum">—</div>
+            <div className="val tnum">{b(beacon.convPageviews)}</div>
           </div>
-          <div className="kpi" title="Fase 2 — conversietracking volgt later">
-            <div className="mono-label">Top-conversiepagina</div>
-            <div className="val tnum">—</div>
+          <div className="kpi" title="Formulier-verzendingen (echte leads)">
+            <div className="mono-label">Leads</div>
+            <div className="val tnum">{b(beacon.leads)}</div>
           </div>
-          <div className="kpi" title="Fase 2 — mens vs bot-detectie volgt later">
-            <div className="mono-label">Gem. mens%</div>
-            <div className="val tnum">—</div>
+          <div className="kpi" title="Menselijke paginabezoeken (beacon draait alleen in echte browsers)">
+            <div className="mono-label">Menselijke bezoeken</div>
+            <div className="val tnum">{b(beacon.pageviews)}</div>
           </div>
         </div>
 
@@ -88,7 +100,7 @@ export default async function DomainDetailPage({
             <h2>Herkomst</h2>
             <p className="sub">top-landen naar requests</p>
             {countries.length === 0 ? (
-              <div className="empty-state">Nog geen data — de eerste snapshot draait vannacht.</div>
+              <div className="empty-state">Nog geen data voor deze periode.</div>
             ) : (
               <div className="bars">
                 {countries.map((c) => (
@@ -114,10 +126,24 @@ export default async function DomainDetailPage({
 
         <div className="chart-card" style={{ marginTop: 18 }}>
           <h2>Top-pagina&apos;s</h2>
-          <p className="sub">conversiepagina&apos;s gemarkeerd — de brug naar lead-tracking</p>
-          <div className="empty-state">
-            Nog geen paginadata — de eerste snapshot draait vannacht.
-          </div>
+          <p className="sub">via de lead-beacon · conversiepagina&apos;s gemarkeerd</p>
+          {!beacon.hasBeacon ? (
+            <div className="empty-state">Lead-beacon nog niet actief op dit domein.</div>
+          ) : beacon.topPaths.length === 0 ? (
+            <div className="empty-state">Nog geen beacon-bezoeken in deze periode.</div>
+          ) : (
+            <ul className="paths">
+              {beacon.topPaths.map((p) => (
+                <li key={p.path}>
+                  <span className={p.isConversion ? 'path-conv' : ''}>
+                    {p.path}
+                    {p.isConversion ? ' · conversiepagina' : ''}
+                  </span>
+                  <span className="tnum">{p.count.toLocaleString('nl-NL')}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </section>

@@ -18,6 +18,15 @@ async function loadOverview(days: number): Promise<DomainRow[]> {
   }
 }
 
+async function loadBeacon(days: number) {
+  try {
+    const { getBeaconOverview } = await import('@/lib/queries')
+    return await getBeaconOverview(days)
+  } catch {
+    return { leads: 0, convPageviews: 0, beaconPageviews: 0, hasBeacon: false }
+  }
+}
+
 export default async function OverviewPage({
   searchParams,
 }: {
@@ -26,6 +35,7 @@ export default async function OverviewPage({
   const params = await searchParams
   const days = parseDays(params.days)
   const rows = await loadOverview(days)
+  const beacon = await loadBeacon(days)
 
   const totalUniques = rows.reduce((s, r) => s + r.uniques, 0)
   const totalRequests = rows.reduce((s, r) => s + r.requests, 0)
@@ -52,13 +62,13 @@ export default async function OverviewPage({
             <div className="mono-label">Requests</div>
             <div className="val tnum">{totalRequests.toLocaleString('nl-NL')}</div>
           </div>
-          <div className="kpi" title="Fase 2 — conversietracking volgt later">
+          <div className="kpi" title="Bezoeken aan conversiepagina's (bijv. /contact, /offerte) via de lead-beacon">
             <div className="mono-label">Conversiepagina-bezoek</div>
-            <div className="val tnum">—</div>
+            <div className="val tnum">{beacon.hasBeacon ? beacon.convPageviews.toLocaleString('nl-NL') : '—'}</div>
           </div>
-          <div className="kpi" title="Fase 2 — mens vs bot-detectie volgt later">
-            <div className="mono-label">Mens vs bot</div>
-            <div className="val tnum">—</div>
+          <div className="kpi accent" title="Formulier-verzendingen (echte leads) via de lead-beacon">
+            <div className="mono-label">Leads</div>
+            <div className="val tnum">{beacon.hasBeacon ? beacon.leads.toLocaleString('nl-NL') : '—'}</div>
           </div>
         </div>
 

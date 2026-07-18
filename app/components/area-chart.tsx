@@ -1,6 +1,6 @@
 export function AreaChart({ values }: { values: number[] }) {
   if (values.length < 2) {
-    return <div className="empty-state">Nog geen data — de eerste snapshot draait vannacht.</div>
+    return <div className="empty-state">Te weinig historie voor een trend (nog maar 1 dag met data).</div>
   }
   const w = 560
   const h = 200

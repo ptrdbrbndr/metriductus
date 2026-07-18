@@ -31,3 +31,8 @@ export async function upsertCountries(rows: Record<string, unknown>[]) {
   const { error } = await db.from('daily_country').upsert(rows, { onConflict: 'zone_name,day,country' })
   if (error) throw new Error(`daily_country: ${error.message}`)
 }
+
+export async function insertLeadEvent(row: Record<string, unknown>) {
+  const { error } = await db.from('lead_events').insert(row)
+  if (error) throw new Error(`lead_events: ${error.message}`)
+}

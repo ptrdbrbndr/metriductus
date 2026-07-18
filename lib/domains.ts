@@ -1,5 +1,8 @@
 export type DomainConfig = { zoneName: string; label: string; conversionPaths: string[] }
 
+// Fase 2: domeinen met de lead-beacon (client-side snippet actief).
+export const BEACON_ZONES = ['naviductus.nl', 'aquaductus.nl', 'autoductus.nl']
+
 // 11 business/prospect-facing domeinen, allemaal op Cloudflare (fase 1).
 // liefdevolleblik.nl is bewust weggelaten (privéproject).
 export const DOMAINS: DomainConfig[] = [
