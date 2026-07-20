@@ -15,15 +15,18 @@ export async function getBeaconOverview(days: number) {
   const { data: events } = await db.from('lead_events')
     .select('zone_name,path,event_type').gte('day', from)
 
-  let leads = 0, convPageviews = 0, beaconPageviews = 0
+  let leads = 0, leadsOffPath = 0, convPageviews = 0, beaconPageviews = 0
   for (const e of events ?? []) {
-    if (e.event_type === 'lead') leads++
-    else {
+    if (e.event_type === 'lead') {
+      // Alleen een verkoop-lead als het formulier op een conversiepagina stond.
+      if (convPaths.get(e.zone_name)?.has(e.path)) leads++
+      else leadsOffPath++
+    } else {
       beaconPageviews++
       if (convPaths.get(e.zone_name)?.has(e.path)) convPageviews++
     }
   }
-  return { leads, convPageviews, beaconPageviews, hasBeacon: (events ?? []).length > 0 }
+  return { leads, leadsOffPath, convPageviews, beaconPageviews, hasBeacon: (events ?? []).length > 0 }
 }
 
 // Fase 2: beacon-detail per domein.
@@ -35,13 +38,20 @@ export async function getDomainBeacon(zoneName: string, days: number) {
   const { data: events } = await db.from('lead_events')
     .select('path,event_type,day').eq('zone_name', zoneName).gte('day', from)
 
-  let pageviews = 0, convPageviews = 0, leads = 0
+  let pageviews = 0, convPageviews = 0, leads = 0, leadsOffPath = 0
   const byPath = new Map<string, number>()
   const leadByDay = new Map<string, number>()
+  const leadsByPath = new Map<string, number>()
   for (const e of events ?? []) {
     if (e.event_type === 'lead') {
-      leads++
-      leadByDay.set(e.day, (leadByDay.get(e.day) ?? 0) + 1)
+      leadsByPath.set(e.path, (leadsByPath.get(e.path) ?? 0) + 1)
+      // Alleen een verkoop-lead als het formulier op een conversiepagina stond.
+      if (conv.has(e.path)) {
+        leads++
+        leadByDay.set(e.day, (leadByDay.get(e.day) ?? 0) + 1)
+      } else {
+        leadsOffPath++
+      }
     } else {
       pageviews++
       byPath.set(e.path, (byPath.get(e.path) ?? 0) + 1)
@@ -53,7 +63,11 @@ export async function getDomainBeacon(zoneName: string, days: number) {
     .sort((a, b) => b.count - a.count).slice(0, 8)
   const leadSeries = [...leadByDay.entries()].map(([day, count]) => ({ day, count })).sort((a, b) => a.day.localeCompare(b.day))
 
-  return { hasBeacon: BEACON_ZONES.includes(zoneName), pageviews, convPageviews, leads, topPaths, leadSeries }
+  const leadPaths = [...leadsByPath.entries()]
+    .map(([path, count]) => ({ path, count, isConversion: conv.has(path) }))
+    .sort((a, b) => b.count - a.count)
+
+  return { hasBeacon: BEACON_ZONES.includes(zoneName), pageviews, convPageviews, leads, leadsOffPath, topPaths, leadSeries, leadPaths }
 }
 
 export async function getOverview(days: number) {

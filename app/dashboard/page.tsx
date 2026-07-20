@@ -23,7 +23,7 @@ async function loadBeacon(days: number) {
     const { getBeaconOverview } = await import('@/lib/queries')
     return await getBeaconOverview(days)
   } catch {
-    return { leads: 0, convPageviews: 0, beaconPageviews: 0, hasBeacon: false }
+    return { leads: 0, leadsOffPath: 0, convPageviews: 0, beaconPageviews: 0, hasBeacon: false }
   }
 }
 

@@ -21,8 +21,14 @@
   // Paginabezoek (elke pageload).
   send('pageview')
 
+  // Inlog-/account-formulieren zijn geen verkoop-leads — die slaan we over.
+  var AUTH_RE = /(^|\/)(login|signin|sign-in|inloggen|logout|register|registreren|wachtwoord|password|reset|account)(\/|$)/i
+
   // Lead: elke formulier-verzending (capture-fase, zodat het ook telt bij navigatie weg).
-  document.addEventListener('submit', function () { send('lead') }, true)
+  document.addEventListener('submit', function () {
+    if (AUTH_RE.test(location.pathname)) return
+    send('lead')
+  }, true)
 
   // Handmatige lead-trigger voor JS-formulieren (fetch/AJAX): window.metriductusLead('/pad')
   window.metriductusLead = function (path) { send('lead', path) }

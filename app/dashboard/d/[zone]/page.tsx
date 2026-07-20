@@ -30,7 +30,7 @@ async function loadBeacon(zoneName: string, days: number) {
     const { getDomainBeacon } = await import('@/lib/queries')
     return await getDomainBeacon(zoneName, days)
   } catch {
-    return { hasBeacon: false, pageviews: 0, convPageviews: 0, leads: 0, topPaths: [], leadSeries: [] }
+    return { hasBeacon: false, pageviews: 0, convPageviews: 0, leads: 0, leadsOffPath: 0, topPaths: [], leadSeries: [], leadPaths: [] }
   }
 }
 
@@ -145,6 +145,29 @@ export default async function DomainDetailPage({
             </ul>
           )}
         </div>
+
+        {beacon.hasBeacon && beacon.leadPaths.length > 0 && (
+          <div className="chart-card" style={{ marginTop: 18 }}>
+            <h2>Formulier-verzendingen</h2>
+            <p className="sub">
+              telt alleen als lead op een conversiepagina
+              {beacon.leadsOffPath > 0
+                ? ` · ${beacon.leadsOffPath} verzending(en) buiten een conversiepad — voeg het pad toe aan conversionPaths als dit wél leads zijn`
+                : ''}
+            </p>
+            <ul className="paths">
+              {beacon.leadPaths.map((p) => (
+                <li key={p.path}>
+                  <span className={p.isConversion ? 'path-conv' : ''}>
+                    {p.path}
+                    {p.isConversion ? ' · telt als lead' : ' · telt niet mee'}
+                  </span>
+                  <span className="tnum">{p.count.toLocaleString('nl-NL')}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </section>
   )
